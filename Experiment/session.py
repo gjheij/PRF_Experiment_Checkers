@@ -44,43 +44,32 @@ class PRFSession(Session):
             self.screen_dir=output_dir+'/'+output_str+'_Screenshots'
             if not os.path.exists(self.screen_dir):
                 os.mkdir(self.screen_dir)
-            
-        
-            
         
         #create all stimuli and trials at the beginning of the experiment, to save time and resources        
         self.create_stimuli()
         self.create_trials()
             
-        
-
-
-
-
-
     def create_stimuli(self):
         
-
-        
         #generate PRF stimulus
-        self.prf_stim = PRFStim(session=self, 
-                        squares_in_bar=self.settings['PRF stimulus settings']['Squares in bar'], 
-                        bar_width_deg=self.settings['PRF stimulus settings']['Bar width in degrees'],
-                        flicker_frequency=self.settings['PRF stimulus settings']['Checkers motion speed'])#self.deg2pix(self.settings['prf_max_eccentricity']))    
+        self.prf_stim = PRFStim(
+            session=self, 
+            squares_in_bar=self.settings['PRF stimulus settings']['Squares in bar'], 
+            bar_width_deg=self.settings['PRF stimulus settings']['Bar width in degrees'],
+            flicker_frequency=self.settings['PRF stimulus settings']['Checkers motion speed'])#self.deg2pix(self.settings['prf_max_eccentricity']))    
         
-
         #currently unused
         #self.instruction_string = """Please fixate in the center of the screen. Your task is to respond whenever the dot changes color."""
-        
 
         #generate raised cosine alpha mask
-        mask = filters.makeMask(matrixSize=self.win.size[0], 
-                                shape='raisedCosine', 
-                                radius=np.array([self.win.size[1]/self.win.size[0], 1.0]),
-                                center=(0.0, 0.0), 
-                                range=[-1, 1], 
-                                fringeWidth=0.02
-                                )
+        mask = filters.makeMask(
+            matrixSize=self.win.size[0], 
+            shape='raisedCosine', 
+            radius=np.array([self.win.size[1]/self.win.size[0], 1.0]),
+            center=(0.0, 0.0), 
+            range=[-1, 1], 
+            fringeWidth=0.02
+        )
 
         #adjust mask size in case the stimulus runs on a mac 
         if self.settings['operating system'] == 'mac':
@@ -88,38 +77,37 @@ class PRFSession(Session):
         else: 
             mask_size = [self.win.size[0],self.win.size[1]]
             
-        self.mask_stim = visual.GratingStim(self.win, 
-                                        mask=-mask, 
-                                        tex=None, 
-                                        units='pix',
-                                        
-                                        size=mask_size, 
-                                        pos = np.array((0.0,0.0)), 
-                                        color = [0,0,0]) 
-        
-
-
+        self.mask_stim = visual.GratingStim(
+            self.win, 
+            mask=-mask, 
+            tex=None, 
+            units='pix',                            
+            size=mask_size, 
+            pos = np.array((0.0,0.0)), 
+            color = [0,0,0]
+        )
 
         #as current basic task, generate fixation circles of different colors, with black border
-        
         fixation_radius_pixels=tools.monitorunittools.deg2pix(self.settings['PRF stimulus settings']['Size fixation dot in degrees'], self.monitor)/2
 
 #        self.fixation_circle = visual.Circle(self.win, 
 #            radius=fixation_radius_pixels, 
 #            units='pix', lineColor='black')
         
-        
         #two colors of the fixation circle for the task
-        self.fixation_disk_0 = visual.Circle(self.win, 
-            units='pix', radius=fixation_radius_pixels, 
-            fillColor=[1,-1,-1], lineColor=[1,-1,-1])
+        self.fixation_disk_0 = visual.Circle(
+            self.win, 
+            units='pix', 
+            radius=fixation_radius_pixels, 
+            fillColor=[1,-1,-1], 
+            lineColor=[1,-1,-1])
         
-        self.fixation_disk_1 = visual.Circle(self.win, 
-            units='pix', radius=fixation_radius_pixels, 
-            fillColor=[-1,1,-1], lineColor=[-1,1,-1])
-
-
-
+        self.fixation_disk_1 = visual.Circle(
+            self.win, 
+            units='pix', 
+            radius=fixation_radius_pixels, 
+            fillColor=[-1,1,-1], 
+            lineColor=[-1,1,-1])
 
     def create_trials(self):
         """creates trials by setting up prf stimulus sequence"""
@@ -171,15 +159,16 @@ class PRFSession(Session):
         #trial list
         for i in range(self.trial_number):
                 
-            self.trial_list.append(PRFTrial(session=self,
-                                            trial_nr=i,
-                                               
-                           bar_orientation=self.bar_orientation_at_TR[i],
-                           bar_position_in_ori=self.bar_pos_in_ori[i],
-                           bar_direction=self.bar_direction_at_TR[i]
-                           #,tracker=self.tracker
-                           ))
-
+            self.trial_list.append(
+                PRFTrial(
+                    session=self,
+                    trial_nr=i,                           
+                    bar_orientation=self.bar_orientation_at_TR[i],
+                    bar_position_in_ori=self.bar_pos_in_ori[i],
+                    bar_direction=self.bar_direction_at_TR[i]
+                    #,tracker=self.tracker
+                )
+            )
 
         #times for dot color change. continue the task into the topup
         self.total_time = self.trial_number*self.bar_step_length 
@@ -187,11 +176,9 @@ class PRFSession(Session):
         if self.settings['mri']['topup_scan']==True:
             self.total_time += self.topup_scan_duration
         
-        
         #DOT COLOR CHANGE TIMES    
         self.dot_switch_color_times = np.arange(3, self.total_time, float(self.settings['Task settings']['color switch interval']))
         self.dot_switch_color_times += (2*np.random.rand(len(self.dot_switch_color_times))-1)
-        
         
         #needed to keep track of which dot to print
         self.current_dot_time=0
@@ -211,11 +198,11 @@ class PRFSession(Session):
   
         #draw the bar at the required orientation for this TR, unless the orientation is -1, code for a blank period
         if self.current_trial.bar_orientation != -1:
-            self.prf_stim.draw(time=prf_time, 
-                               pos_in_ori=self.current_trial.bar_position_in_ori, 
-                               orientation=self.current_trial.bar_orientation,
-                               bar_direction=self.current_trial.bar_direction)
-            
+            self.prf_stim.draw(
+                time=prf_time, 
+                pos_in_ori=self.current_trial.bar_position_in_ori, 
+                orientation=self.current_trial.bar_orientation,
+                bar_direction=self.current_trial.bar_direction)
             
         #hacky way to draw the correct dot color. could be improved
         if self.next_dot_time<len(self.dot_switch_color_times):
@@ -229,8 +216,6 @@ class PRFSession(Session):
                     self.next_dot_time+=2
                     
         #self.fixation_circle.draw()
-
-
 
     def run(self):
         """run the session"""
