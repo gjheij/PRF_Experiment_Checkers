@@ -1,0 +1,66 @@
+preferences:
+    general:
+        audioLib: SoundDevice
+        units: deg
+
+window:
+    size: [1920, 1080]
+    screen: 1
+    pos: [0, 0]
+    color: [0, 0, 0]
+    fullscr: True
+    winType: pyglet
+    waitBlanking: True
+
+monitor:
+    name: default
+    width: 69.8  # in cm
+    distance: 210  # in cm
+    gamma: 1
+
+operating_system: linux # specify the OS the code is run on as 'mac', 'linux', or 'windows'
+
+mouse:
+    visible: False
+
+eyetracker:
+    model: eyelink
+
+mri:
+    TR: 1.5  # seconds between volume acquisitions
+    topup_scan: True
+    topup_duration: 45 # topup scan duration in seconds (no 't's)
+
+    #only relevant for scanning simulations
+    simulate: False #set this to true to simulate a virtual scanner   
+    TA: 1.5  # seconds to acquire one volume
+    volumes: 100  # number of 3D volumes to obtain in a given scanning run
+    sync: t  # character used as flag for simulation sync timing, default=‘5’
+    skip: 0  # how many frames to silently omit initially during T1 stabilization, no sync pulse.
+    sound: False  # simulate scanner noise
+
+
+PRF_stimulus_settings:
+    Scanner_sync: True                # set this to true to make bar move on input 't'
+    Screenshot: True
+    Squares_in_bar: 2
+    Bar_pass_steps: 20                # number of steps the bar takes to traverse the aperture
+    Blanks_length: 10                  # length of interbar periods (-1 in orientation). like bar pass steps, in units of TRs or bar step length
+    Bar_orientations: [-1, 0,  225, -1, 90, 315, -1,  180, 45, -1,  270, 135,  -1, -1]
+    Bar_width_in_degrees: 1.25
+    Checkers_motion_speed: 3          # checkers motion speed. direction is randomly up/down at each bar step
+    Size_fixation_dot_in_degrees: 0.05 # dot changes color on average every two TRs (or bar steps)
+    Bar_step_length: 1.5                # in seconds. this is only used if Scanner sync is set to False
+    delimiter_increments: 5
+
+Task_settings: 
+    response_interval: 0.8 # time in s you allow the participant to respond that still counts as correct response
+    color_switch_interval: 3.5 # interval in s between color dot switches, note: a random decimal between -1 and +1 is added to it in the code 
+
+various:
+    piechart_width: 1
+    text_width: 150
+    text_height: 0.5
+    buttons: ['b', 'e', 'j', 'k', 'l', 'semicolon', 'y', 'r']
+    button_size: 2
+    cue_color: "#000000"
