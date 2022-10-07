@@ -6,10 +6,19 @@ Requirements: psychopy and exptools2
 **Usage**
 
 Create setting files named expsettings_*Task*.yml within the Experiment folder. Change *Task* to your actual task name. Run the following line from within the Experient folder. 
-
-- python main.py sub-*xxx* ses-*x* task-*NameTask* run-*x*
-
 Subject SHOULD be specified according the the BIDS convention (sub-001, sub-002 and so on), Task MUST match one of the settings files in the Experiment folder, and Run SHOULD be an integer.
+
+For `Experiment`, run:
+```bash
+python main.py sub-*xxx* ses-*x* task-*NameTask* run-*x* 
+```
+
+For `Experiment2`, run:
+```bash
+python main.py sub-*xxx* ses-*x* task-*NameTask* run-*x* <eyetracker on/off [1|0]> <delimit screen yes/no [1|0]> <>
+```
+
+If we want to make use of the eyetracker, specify a 1. We can also have the subject delineate the screen which we can use to mask the design matrix. Generally, if you have 1 task in a session, you'll only need to do this once. Specify a 1 for yes, 0 for no. If you're not using the eyetracker, but you want subjects to delineate the screen, specify a 0 for eyetracker and 1 for delineation. This is because the arguments are read in per index.
 
 **Marco's PRF mapping**
 
